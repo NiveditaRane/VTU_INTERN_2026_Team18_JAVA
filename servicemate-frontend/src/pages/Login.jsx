@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
+// Added Eye and EyeOff icons
+import { Mail, Lock, ArrowRight, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import LiveBackground from '../components/LiveBackground';
 import axios from 'axios';
@@ -8,15 +9,17 @@ import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
+  // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      // Note: Remember to update this URL to your Railway URL when you deploy!
       const res = await axios.post('http://localhost:8080/api/auth/login', form);
       localStorage.setItem('user', JSON.stringify(res.data));
       toast.success("Welcome Back!");
-      // Redirect based on role
       navigate(res.data.role === 'provider' ? '/provider-dashboard' : '/customer-dashboard');
     } catch (err) {
       toast.error(err.response?.data || "Login failed");
@@ -47,10 +50,26 @@ const Login = () => {
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-indigo-400" size={20} />
                 <input className="premium-input" type="email" placeholder="Email Address" onChange={e => setForm({...form, email: e.target.value})} required />
               </div>
+
+              {/* Password wrapper with Eye Toggle */}
               <div className="premium-input-wrapper group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-hover:text-indigo-400" size={20} />
-                <input className="premium-input" type="password" placeholder="Password" onChange={e => setForm({...form, password: e.target.value})} required />
+                <input 
+                  className="premium-input pr-12" // Added padding-right to make room for icon
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="Password" 
+                  onChange={e => setForm({...form, password: e.target.value})} 
+                  required 
+                />
+                <button
+                  type="button" // Important: prevents form submission on click
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-indigo-400 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
+
               <button type="submit" className="btn-glow">Sign In <ArrowRight size={20} /></button>
             </form>
             <p className="text-center text-slate-500">New here? <Link to="/signup" className="text-indigo-400 font-bold hover:underline">Create Account</Link></p>
@@ -60,4 +79,5 @@ const Login = () => {
     </LiveBackground>
   );
 };
+
 export default Login;
