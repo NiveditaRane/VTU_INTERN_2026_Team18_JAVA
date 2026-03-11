@@ -13,8 +13,8 @@ The goal of ServiceMate is to simplify the process of finding and booking truste
 ## 🛠️ Tech Stack
 
 Frontend: React.js  
-Backend: Spring Boot / Node.js  
-Database: MySQL / PostgreSQL  
+Backend: Spring Boot   
+Database: MySQL 
 API Testing: Postman  
 Version Control: Git & GitHub  
 
